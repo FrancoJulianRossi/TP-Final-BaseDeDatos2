@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Sistema de Inventario</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: auto;
+            padding: 1rem;
+        }
+
+        h2 {
+            margin-top: 2rem;
+        }
+
+        label {
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 0.4rem;
+            margin-top: 0.2rem;
+        }
+
+        button {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 0.5rem;
+            text-align: left;
+        }
+
+        tr.stock-bajo {
+            background-color: #f8d7da;
+        }
+
+        /* Barra de navegación */
+        nav {
+            margin-bottom: 1.5rem;
+        }
+
+        nav button {
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            font-weight: bold;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        nav button.active {
+            background-color: #0056b3;
+        }
+
+        /* Ocultar secciones por defecto */
+        section {
+            display: none;
+        }
+
+        section.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Sistema de Inventario - Tienda</h1>
+
+    <nav>
+        <button id="btn-ver-productos" class="active">Productos</button>
+        <button id="btn-ver-proveedores">Proveedores</button>
+        <button id="btn-ver-movimientos">Movimientos</button>
+    </nav>
+
+    <section id="productos-section" class="active">
+        <h2>Productos</h2>
+        <button id="btn-cargar-productos">Cargar productos</button>
+        <table id="tabla-productos">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Precio</th>
+                    <th>Stock Actual</th>
+                    <th>Stock Mínimo</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <h3>Agregar Producto</h3>
+        <form id="form-agregar-producto">
+            <label>Código:<input type="text" id="codigo" required></label>
+            <label>Nombre:<input type="text" id="nombre" required></label>
+            <label>Categoría:<input type="text" id="categoria" required></label>
+            <label>Precio:<input type="number" id="precio" step="0.01" required></label>
+            <label>Stock Actual:<input type="number" id="stockActual" required></label>
+            <label>Stock Mínimo:<input type="number" id="stockMinimo" required></label>
+            <button type="submit">Agregar Producto</button>
+        </form>
+    </section>
+
+    <section id="proveedores-section">
+        <h2>Proveedores</h2>
+        <button id="btn-cargar-proveedores">Cargar proveedores</button>
+        <table id="tabla-proveedores">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Contacto</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Productos Ofrecidos</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <h3>Agregar Proveedor</h3>
+        <form id="form-agregar-proveedor">
+            <label>Nombre:<input type="text" id="nombreProveedor" required></label>
+            <label>Contacto:<input type="text" id="contactoProveedor" required></label>
+            <label>Teléfono:<input type="text" id="telefonoProveedor" required></label>
+            <label>Email:<input type="email" id="emailProveedor" required></label>
+            <label>Productos Ofrecidos (códigos separados por coma):<input type="text" id="productosOfrecidos"
+                    required></label>
+            <button type="submit">Agregar Proveedor</button>
+        </form>
+    </section>
+
+    <section id="movimientos-section">
+        <h2>Movimientos</h2>
+
+        <h3>Registrar Movimiento</h3>
+        <form id="form-registrar-movimiento">
+            <label>Producto (código):
+                <input type="text" id="codigoMovimiento" required>
+            </label>
+            <label>Tipo:
+                <select id="tipoMovimiento" required>
+                    <option value="entrada">Entrada</option>
+                    <option value="salida">Salida</option>
+                </select>
+            </label>
+            <label>Cantidad:
+                <input type="number" id="cantidadMovimiento" min="1" required>
+            </label>
+            <label>Motivo:
+                <input type="text" id="motivoMovimiento" required>
+            </label>
+            <label>Usuario:
+                <input type="text" id="usuarioMovimiento" required>
+            </label>
+            <button type="submit">Registrar Movimiento</button>
+        </form>
+
+        <h3>Reporte de Movimientos</h3>
+        <label>Fecha Inicio:
+            <input type="date" id="fechaInicioReporte">
+        </label>
+        <label>Fecha Fin:
+            <input type="date" id="fechaFinReporte">
+        </label>
+        <button id="btn-cargar-movimientos">Cargar movimientos</button>
+
+        <table id="tabla-movimientos" style="margin-top:1rem;">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Tipo</th>
+                    <th>Cantidad</th>
+                    <th>Motivo</th>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
+
+    <script src="app.js"></script>
+    <script>
+        // Código para mostrar y ocultar secciones al clickear botones del nav
+        const secciones = ['productos-section', 'proveedores-section', 'movimientos-section'];
+        const botones = {
+            'btn-ver-productos': 'productos-section',
+            'btn-ver-proveedores': 'proveedores-section',
+            'btn-ver-movimientos': 'movimientos-section',
+        };
+
+        function mostrarSeccion(id) {
+            secciones.forEach(secId => {
+                document.getElementById(secId).classList.toggle('active', secId === id);
+            });
+
+            // Actualizar clase active en botones para marcar el seleccionado
+            Object.entries(botones).forEach(([btnId, secId]) => {
+                document.getElementById(btnId).classList.toggle('active', secId === id);
+            });
+        }
+
+        Object.keys(botones).forEach(btnId => {
+            document.getElementById(btnId).addEventListener('click', () => {
+                mostrarSeccion(botones[btnId]);
+            });
+        });
+
+        // Mostrar sección Productos por defecto al cargar la página
+        mostrarSeccion('productos-section');
+    </script>
+</body>
+
+</html>
